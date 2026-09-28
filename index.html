@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Master Invoice DP – Megrashy WO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f1ea;--pn:#fff;--tx:#2b2622;--mu:#7a6f64;--bd:#e3d8c9;--ac:#c9a273}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1917;--pn:#26221f;--tx:#efe8df;--mu:#a89c8f;--bd:#3a3430}}
+:root[data-theme="dark"]{--bg:#1c1917;--pn:#26221f;--tx:#efe8df;--mu:#a89c8f;--bd:#3a3430}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Segoe UI",Helvetica,Arial,sans-serif}
+.app{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:16px;max-width:1200px;margin:auto}
+@media(max-width:860px){.app{grid-template-columns:1fr}}
+.form{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:14px;align-self:start}
+.form h2{font-size:14px;margin:14px 0 6px;color:var(--mu);font-weight:600}
+.form h2:first-child{margin-top:0}
+label{display:block;font-size:12.5px;color:var(--mu);margin:8px 0 2px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:6px;background:transparent;color:var(--tx);font:inherit}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+button{padding:9px 12px;border:1px solid var(--ac);background:var(--ac);color:#fff;border-radius:6px;font:inherit;cursor:pointer}
+button.ghost{background:transparent;color:var(--tx);border-color:var(--bd)}
+.acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.paperwrap{overflow-x:auto}
+.paper{background:#fff;color:#111;width:794px;max-width:100%;min-width:640px;margin:0 auto;padding:40px 44px;font-size:13px;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+.paper *{color:inherit}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+.logo{width:110px;height:80px;display:flex;align-items:center}
+.logo img{max-width:100%;max-height:100%}
+.co{text-align:right;line-height:1.6}
+.co b{display:block;font-size:24px;font-weight:400;color:#c9a273;margin-bottom:6px}
+.meta{display:flex;justify-content:space-between;margin-top:30px;position:relative}
+.box{border:1px solid #e6dccf;background:#fdfaf6;padding:10px 12px;line-height:1.8;width:52%}
+.to{text-align:right;line-height:1.8}
+.stamp{position:absolute;left:40%;top:-30px;transform:rotate(-24deg);border:4px solid rgba(232,110,120,.55);color:rgba(232,110,120,.6)!important;border-radius:50%;width:150px;height:150px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:19px;line-height:1.1;padding:20px;pointer-events:none}
+.stamp.lunas{border-color:rgba(70,160,100,.55);color:rgba(70,160,100,.65)!important}
+h4{margin:22px 0 6px;font-size:13.5px}
+table{width:100%;border-collapse:collapse}
+th{background:#d9b892;color:#fff!important;padding:8px;font-weight:600;border:1px solid #e6dccf}
+td{padding:8px;border:1px solid #ddd;text-align:center}
+td.l{text-align:left}
+tr.sum td{background:#d9b892;color:#fff!important;font-weight:700;border:1px solid #e6dccf}
+tr.sum td:last-child{text-align:right}
+ul{margin:6px 0;padding-left:20px;line-height:1.7}
+.ph{color:#b8a998!important}
+@media print{
+ body{background:#fff}
+ .form,.hint{display:none!important}
+ .app{display:block;padding:0}.paperwrap{overflow:visible}
+ .paper{box-shadow:none;width:100%;min-width:0;padding:0}
+ @page{size:A4;margin:14mm}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="form" id="f">
+<h2>Data invoice</h2>
+<label>Nomor invoice</label><input data-k="no" placeholder="PMM000000">
+<div class="row"><div><label>Waktu tagihan</label><input type="datetime-local" data-k="tgl"></div><div><label>Jatuh tempo</label><input type="datetime-local" data-k="due"></div></div>
+<label>Status</label><select data-k="status"><option>MENUNGGU PEMBAYARAN</option><option>LUNAS</option></select>
+<h2>Klien</h2>
+<label>Nama klien</label><input data-k="klien" placeholder="Nama klien">
+<label>No. WhatsApp</label><input data-k="hp" placeholder="+62...">
+<h2>Tagihan DP</h2>
+<label>Jumlah DP (Rp)</label><input type="number" data-k="dp" placeholder="0">
+<label>Catatan</label><textarea rows="2" data-k="cat" placeholder="Dp Wedding Planner tanggal, lokasi"></textarea>
+<label>Kode transaksi</label><input data-k="trx" placeholder="TRM000000">
+<label>Item tagihan</label><input data-k="item" value="Wedding Planning Service">
+<label>Total tagihan paket (Rp)</label><input type="number" data-k="total" placeholder="0">
+<h2>Pembayaran diterima</h2>
+<label>Jumlah diterima (Rp)</label><input type="number" data-k="paid" placeholder="0">
+<div class="row"><div><label>Waktu bayar</label><input type="datetime-local" data-k="paidAt"></div><div><label>Metode</label><input data-k="metode" placeholder="Transfer"></div></div>
+<h2>Data usaha</h2>
+<label>Nama usaha</label><input data-k="co" value="Megrashy WO">
+<label>Alamat</label><textarea rows="3" data-k="addr">Podomoro Park, Cluster Fashagriya 7 no.3
+Bojongsoang, Bandung
+Jawa Barat, 40287</textarea>
+<label>Rekening (satu per baris)</label><textarea rows="3" data-k="bank"></textarea>
+<label>Logo</label><input type="file" accept="image/*" id="lg">
+<div class="acts"><button id="pr">Cetak / Simpan PDF</button><button class="ghost" id="rs">Kosongkan</button></div>
+</div>
+<div class="paperwrap"><div class="paper" id="p"></div><p class="hint" style="color:var(--mu);font-size:12px;text-align:center">Pratinjau langsung. Klik “Cetak / Simpan PDF” lalu pilih Simpan sebagai PDF.</p></div>
+</div>
+<script>
+var logo="";
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var M=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+function dt(v){if(!v)return"";var d=new Date(v),z=function(n){return String(n).padStart(2,"0")};return d.getDate()+" "+M[d.getMonth()]+" "+d.getFullYear()+", "+z(d.getHours())+":"+z(d.getMinutes())}
+function rp(n){n=Number(n)||0;return"IDR "+n.toLocaleString("id-ID",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function get(){var o={};document.querySelectorAll("[data-k]").forEach(function(e){o[e.dataset.k]=e.value});return o}
+function ph(v,t){return v?esc(v):'<span class="ph">'+t+'</span>'}
+function render(){
+ var d=get(),lunas=d.status==="LUNAS",short=Math.max((Number(d.total)||0)-(Number(d.paid)||0),0);
+ var banks=d.bank.split("\n").filter(Boolean).map(function(b){return"<li>"+esc(b)+"</li>"}).join("")||'<li class="ph">Tambahkan rekening pembayaran</li>';
+ var paidRow=Number(d.paid)>0?"<tr><td>"+ph(d.no,"Kode")+"</td><td>"+rp(d.paid)+"</td><td>"+ph(dt(d.paidAt),"Waktu")+"</td><td>"+esc(d.metode)+"</td><td>Berhasil</td><td>"+esc(d.cat)+"</td></tr>":'<tr><td colspan="6" style="font-style:italic">Belum ada pembayaran dilakukan</td></tr>';
+ document.getElementById("p").innerHTML=
+ '<div class="top"><div class="logo">'+(logo?'<img src="'+logo+'">':"")+'</div><div class="co"><b>'+esc(d.co)+'</b>'+esc(d.addr).replace(/\n/g,"<br>")+'</div></div>'+
+ '<div class="meta"><div class="box"><b>INVOICE WEDDING PLANNER '+ph(d.no,"PMM000000")+'</b><br>Waktu Tagihan : '+ph(dt(d.tgl),"—")+'<br>Waktu Jatuh Tempo : '+ph(dt(d.due),"—")+'<br>Waktu Pembayaran : '+(dt(d.paidAt)||"-")+'</div>'+
+ '<div class="stamp'+(lunas?" lunas":"")+'">'+(lunas?"LUNAS":"MENUNGGU<br>PEMBAYARAN")+'</div>'+
+ '<div class="to"><b>KEPADA</b><br>'+ph(d.klien,"Nama klien")+'<br><br>'+ph(d.hp,"+62…")+'</div></div>'+
+ '<h4>'+(lunas?"Tagihan Telah Dibayar":"Tagihan Baru Memerlukan Pembayaran")+'</h4>'+
+ '<table><tr><th>Kode</th><th>Jumlah</th><th>Waktu Tagihan</th><th>Waktu Kadaluarsa</th><th>Catatan</th></tr><tr><td>'+ph(d.no,"PMM000000")+'</td><td>'+rp(d.dp)+'</td><td>'+ph(dt(d.tgl),"—")+'</td><td>'+ph(dt(d.due),"—")+'</td><td>'+ph(d.cat,"Catatan tagihan")+'</td></tr></table>'+
+ '<h4>Rincian Transaksi</h4>'+
+ '<table><tr><th style="width:78%">Item Tagihan</th><th>Jumlah Tagihan</th></tr><tr><td class="l">Transaksi Wedding Planner '+ph(d.trx,"TRM000000")+' - '+esc(d.item)+' <i>('+esc(d.item)+')</i></td><td>'+rp(d.total)+'</td></tr>'+
+ '<tr class="sum"><td class="l">Total Tagihan</td><td>'+rp(d.total)+'</td></tr><tr class="sum"><td class="l">Pembayaran Diterima</td><td>'+rp(d.paid)+'</td></tr><tr class="sum"><td class="l">Kekurangan Pembayaran</td><td>'+rp(short)+'</td></tr></table>'+
+ '<h4>Riwayat Pembayaran Dilakukan</h4><table><tr><th>Kode</th><th>Jumlah</th><th>Waktu Pembayaran</th><th>Metode</th><th>Status</th><th>Catatan</th></tr>'+paidRow+'</table>'+
+ '<h4 style="margin-top:28px">Untuk pembayaran melalui transfer dapat ditujukan ke :</h4><ul>'+banks+'</ul>';
+}
+var KEY="megrashy-inv",saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+document.querySelectorAll("[data-k]").forEach(function(e){if(saved[e.dataset.k]!=null)e.value=saved[e.dataset.k]});
+try{logo=localStorage.getItem(KEY+"-logo")||""}catch(e){}
+document.getElementById("f").addEventListener("input",function(){render();try{localStorage.setItem(KEY,JSON.stringify(get()))}catch(e){}});
+document.getElementById("lg").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){logo=r.result;try{localStorage.setItem(KEY+"-logo",logo)}catch(x){}render()};r.readAsDataURL(f)};
+document.getElementById("pr").onclick=function(){window.print()};
+document.getElementById("rs").onclick=function(){["no","tgl","due","klien","hp","dp","cat","trx","total","paid","paidAt","metode"].forEach(function(k){document.querySelector('[data-k="'+k+'"]').value=""});document.querySelector('[data-k="status"]').selectedIndex=0;render();try{localStorage.setItem(KEY,JSON.stringify(get()))}catch(e){}};
+render();
+</script>
+</body>
+</html>
